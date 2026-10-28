@@ -1,0 +1,17 @@
+name: Wyzwania
+version: '${version}'
+main: pl.filip.wyzwania.WyzwaniaPlugin
+api-version: '26.3'
+description: Wspólne dzienne i tygodniowe wyzwania z indywidualnym postępem.
+author: Filip
+commands:
+  wyzwanie:
+    description: Wyzwania, postęp, nagrody i ranking
+    aliases: [wyzwania]
+    usage: /wyzwanie [postep|odbierz|ranking|info|prefix|reload|admin]
+    permission: wyzwania.use
+permissions:
+  wyzwania.use:
+    default: true
+  wyzwania.admin:
+    default: op

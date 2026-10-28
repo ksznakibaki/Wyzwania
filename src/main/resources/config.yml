@@ -1,0 +1,380 @@
+# Po zmianach użyj /wyzwanie reload. Szczegóły i przykłady: README.md.
+reset:
+  timezone: Europe/Warsaw
+  time: '04:00'
+storage:
+  autosave-seconds: 30
+# Pusta lista = wszystkie światy; inaczej np. [world, world_nether, world_the_end].
+worlds: []
+pvp:
+  enabled: false
+  kill-cooldown-seconds: 1800
+  damage-cooldown-seconds: 30
+movement:
+  # Maksymalny zaliczany odcinek jednego zdarzenia, zabezpieczenie przed skokami pozycji.
+  max-step: 12.0
+chat:
+  # Wyłącz, jeśli formatowaniem czatu zarządza inny plugin.
+  enabled: true
+announcements:
+  # Ogłoszenie dla wszystkich online po ukończeniu każdego zadania.
+  completion: true
+tab:
+  # Indywidualny postęp w stopce listy graczy (klawisz TAB).
+  enabled: true
+  refresh-seconds: 2
+prefixes:
+  nowicjusz: {points: 0, text: '<gray>[Nowicjusz]</gray>'}
+  lowca: {points: 100, text: '<green>[Łowca]</green>'}
+  weteran: {points: 500, text: '<aqua>[Weteran]</aqua>'}
+  mistrz: {points: 1000, text: '<light_purple>[Mistrz]</light_purple>'}
+  legenda: {points: 2500, text: '<gold>[Legenda]</gold>'}
+
+# Jeden ważony pakiet przedmiotów + losowe XP z zakresu + stałe punkty.
+# XP to punkty doświadczenia, nie poziomy. Równa waga = równa szansa.
+# Zmiany points stosują się do aktywnych zadań po /wyzwanie reload lub restarcie.
+# Wcześniej zdobyte punkty pozostają bez zmian; przedmioty i XP nie są losowane ponownie.
+rewards:
+  EASY:
+    xp-min: 100
+    xp-max: 150
+    points: 10
+    pool:
+      iron:
+        label: '12 sztabek żelaza'
+        weight: 3
+        items: [{material: IRON_INGOT, amount: 12}]
+      supplies:
+        label: '16 steków i 64 strzały'
+        weight: 3
+        items: [{material: COOKED_BEEF, amount: 16}, {material: ARROW, amount: 64}]
+      emeralds:
+        label: '4 emeraldy'
+        weight: 2
+        items: [{material: EMERALD, amount: 4}]
+  MEDIUM:
+    xp-min: 150
+    xp-max: 250
+    points: 10
+    pool:
+      emeralds:
+        label: '8 emeraldów'
+        weight: 3
+        items: [{material: EMERALD, amount: 8}]
+      adventurer:
+        label: 'Name tag i siodło'
+        weight: 2
+        items: [{material: NAME_TAG, amount: 1}, {material: SADDLE, amount: 1}]
+      potion:
+        label: '16 sztabek żelaza i mikstura odporności na ogień'
+        weight: 2
+        items: [{material: IRON_INGOT, amount: 16}, {material: POTION, amount: 1, potion: LONG_FIRE_RESISTANCE}]
+  HARD:
+    xp-min: 250
+    xp-max: 400
+    points: 10
+    pool:
+      diamond1:
+        label: '1 diament i złote jabłko'
+        weight: 4
+        items: [{material: DIAMOND, amount: 1}, {material: GOLDEN_APPLE, amount: 1}]
+      diamond3:
+        label: '3 diamenty'
+        weight: 2
+        items: [{material: DIAMOND, amount: 3}]
+      book:
+        label: 'Książka Niezniszczalność III'
+        weight: 2
+        items: [{material: ENCHANTED_BOOK, amount: 1, enchantment: 'minecraft:unbreaking', level: 3}]
+  WEEKLY:
+    xp-min: 500
+    xp-max: 1000
+    points: 50
+    pool:
+      star:
+        label: 'Gwiazda Netheru'
+        weight: 1
+        items: [{material: NETHER_STAR, amount: 1}]
+      apple:
+        label: 'Zaklęte złote jabłko'
+        weight: 3
+        items: [{material: ENCHANTED_GOLDEN_APPLE, amount: 1}]
+      scrap1:
+        label: '1 odłamek netherytu'
+        weight: 4
+        items: [{material: NETHERITE_SCRAP, amount: 1}]
+      scrap2:
+        label: '2 odłamki netherytu'
+        weight: 2
+        items: [{material: NETHERITE_SCRAP, amount: 2}]
+      mending:
+        label: 'Książka Naprawa'
+        weight: 3
+        items: [{material: ENCHANTED_BOOK, amount: 1, enchantment: 'minecraft:mending', level: 1}]
+
+# Stałe progi; losowanie szablonu oraz nagrody raz na okres.
+# Dzienne szablony z poprzedniego zestawu są wykluczane z następnego losowania.
+# Pula wymaga dwóch rozłącznych zestawów EASY/MEDIUM/HARD o różnych typach.
+# ANY dla KILL = wrogie moby; konkretny typ może wskazywać dowolną istotę.
+quests:
+  zombie:
+    tier: EASY
+    title: 'Nocna warta'
+    objectives: [{type: KILL, target: ZOMBIE, goal: 25, label: 'Zabij zombie'}]
+  iron:
+    tier: EASY
+    title: 'Żelazne zapasy'
+    objectives: [{type: MINE, target: 'IRON_ORE,DEEPSLATE_IRON_ORE', goal: 32, label: 'Wykop rudy żelaza'}]
+  fishing:
+    tier: EASY
+    title: 'Spokojny połów'
+    objectives: [{type: FISH, target: FISH, goal: 10, label: 'Złów ryby'}]
+  sheep:
+    tier: EASY
+    title: 'Wełniane zapasy'
+    objectives: [{type: SHEAR, target: SHEEP, goal: 20, label: 'Postrzyż owce'}]
+  skeleton:
+    tier: MEDIUM
+    title: 'Kościany patrol'
+    objectives: [{type: KILL, target: SKELETON, goal: 30, label: 'Zabij szkielety'}]
+  breeder:
+    tier: MEDIUM
+    title: 'Rozbudowa stada'
+    objectives: [{type: BREED, target: ANY, goal: 15, label: 'Rozmnóż zwierzęta'}]
+  traveler:
+    tier: MEDIUM
+    title: 'W drogę'
+    objectives: [{type: MOVE, target: ANY, goal: 5000, label: 'Przebądź bloki pieszo, łódką lub na zwierzęciu'}]
+  shields:
+    tier: MEDIUM
+    title: 'Zaopatrzenie straży'
+    objectives: [{type: CRAFT, target: SHIELD, goal: 3, label: 'Stwórz tarcze'}]
+  meals:
+    tier: MEDIUM
+    title: 'Solidny posiłek'
+    objectives: [{type: EAT, target: 'COOKED_BEEF,COOKED_PORKCHOP', goal: 20, label: 'Zjedz steki lub pieczone schaby'}]
+  enderman:
+    tier: HARD
+    title: 'Łowca pereł'
+    objectives: [{type: KILL, target: ENDERMAN, goal: 20, label: 'Zabij endermany'}]
+  diamonds:
+    tier: HARD
+    title: 'W głębi skały'
+    objectives: [{type: MINE, target: 'DIAMOND_ORE,DEEPSLATE_DIAMOND_ORE', goal: 12, label: 'Wykop rudy diamentu'}]
+  long_trip:
+    tier: HARD
+    title: 'Daleka wyprawa'
+    objectives: [{type: MOVE, target: ANY, goal: 10000, label: 'Przebądź bloki pieszo, łódką lub na zwierzęciu'}]
+  treasure:
+    tier: HARD
+    title: 'Skarby z głębin'
+    objectives: [{type: FISH, target: TREASURE, goal: 3, label: 'Wyłów skarby'}]
+  pvp_kills:
+    tier: HARD
+    title: 'Pojedynki'
+    objectives: [{type: PVP_KILL, target: ANY, goal: 3, label: 'Pokonaj graczy'}]
+  pvp_damage:
+    tier: MEDIUM
+    title: 'Trening walki'
+    objectives: [{type: PVP_DAMAGE, target: ANY, goal: 200, label: 'Zadaj obrażenia graczom'}]
+  week_adventure:
+    tier: WEEKLY
+    title: 'Tydzień przygód'
+    objectives:
+      - {type: KILL, target: ANY, goal: 200, label: 'Zabij wrogie moby'}
+      - {type: MINE, target: 'DIAMOND_ORE,DEEPSLATE_DIAMOND_ORE', goal: 24, label: 'Wykop rudy diamentu'}
+      - {type: FISH, target: FISH, goal: 30, label: 'Złów ryby'}
+  week_farmer:
+    tier: WEEKLY
+    title: 'Pracowity gospodarz'
+    objectives:
+      - {type: BREED, target: ANY, goal: 50, label: 'Rozmnóż zwierzęta'}
+      - {type: SHEAR, target: SHEEP, goal: 80, label: 'Postrzyż owce'}
+      - {type: MOVE, target: ANY, goal: 20000, label: 'Przebądź bloki pieszo, łódką lub na zwierzęciu'}
+  week_miner:
+    tier: WEEKLY
+    title: 'Górnicza ekspedycja'
+    objectives:
+      - {type: MINE, target: 'IRON_ORE,DEEPSLATE_IRON_ORE', goal: 128, label: 'Wykop rudy żelaza'}
+      - {type: MINE, target: 'GOLD_ORE,DEEPSLATE_GOLD_ORE,NETHER_GOLD_ORE', goal: 64, label: 'Wykop rudy złota'}
+      - {type: KILL, target: ANY, goal: 150, label: 'Zabij wrogie moby'}
+  spiders:
+    tier: EASY
+    title: 'Pajęcza sieć'
+    objectives: [{type: KILL, target: SPIDER, goal: 20, label: 'Zabij pająki'}]
+  creepers:
+    tier: EASY
+    title: 'Proch na zapas'
+    objectives: [{type: KILL, target: CREEPER, goal: 15, label: 'Zabij creepery'}]
+  coal:
+    tier: EASY
+    title: 'Węgiel na zimę'
+    objectives: [{type: MINE, target: 'COAL_ORE,DEEPSLATE_COAL_ORE', goal: 64, label: 'Wykop rudy węgla'}]
+  copper:
+    tier: EASY
+    title: 'Miedziane żyły'
+    objectives: [{type: MINE, target: 'COPPER_ORE,DEEPSLATE_COPPER_ORE', goal: 48, label: 'Wykop rudy miedzi'}]
+  redstone:
+    tier: EASY
+    title: 'Czerwony pył'
+    objectives: [{type: MINE, target: 'REDSTONE_ORE,DEEPSLATE_REDSTONE_ORE', goal: 32, label: 'Wykop rudy redstone'}]
+  lapis:
+    tier: EASY
+    title: 'Niebieski skarb'
+    objectives: [{type: MINE, target: 'LAPIS_ORE,DEEPSLATE_LAPIS_ORE', goal: 24, label: 'Wykop rudy lapisu'}]
+  stone_bricks:
+    tier: EASY
+    title: 'Budowniczy'
+    objectives: [{type: CRAFT, target: STONE_BRICKS, goal: 64, label: 'Stwórz kamienne cegły'}]
+  torches:
+    tier: EASY
+    title: 'Światło w tunelu'
+    objectives: [{type: CRAFT, target: TORCH, goal: 64, label: 'Stwórz pochodnie'}]
+  blaze:
+    tier: MEDIUM
+    title: 'Strażnik Netheru'
+    objectives: [{type: KILL, target: BLAZE, goal: 25, label: 'Zabij blaze'}]
+  gold:
+    tier: MEDIUM
+    title: 'Złote żyły'
+    objectives: [{type: MINE, target: 'GOLD_ORE,DEEPSLATE_GOLD_ORE,NETHER_GOLD_ORE', goal: 32, label: 'Wykop rudy złota'}]
+  fishing_day:
+    tier: MEDIUM
+    title: 'Wędkarski dzień'
+    objectives: [{type: FISH, target: ANY, goal: 25, label: 'Złów dowolne połowy'}]
+  cows:
+    tier: MEDIUM
+    title: 'Nowe pokolenie'
+    objectives: [{type: BREED, target: COW, goal: 20, label: 'Rozmnóż krowy'}]
+  horses:
+    tier: MEDIUM
+    title: 'Końskie ranczo'
+    objectives: [{type: BREED, target: HORSE, goal: 8, label: 'Rozmnóż konie'}]
+  bookshelves:
+    tier: MEDIUM
+    title: 'Biblioteczka'
+    objectives: [{type: CRAFT, target: BOOKSHELF, goal: 8, label: 'Stwórz biblioteczki'}]
+  lanterns:
+    tier: MEDIUM
+    title: 'Oświetlenie osady'
+    objectives: [{type: CRAFT, target: LANTERN, goal: 16, label: 'Stwórz latarnie'}]
+  varied_diet:
+    tier: MEDIUM
+    title: 'Różnorodna dieta'
+    objectives: [{type: EAT_UNIQUE, target: ANY, goal: 8, label: 'Zjedz różne rodzaje jedzenia'}]
+  discoverer:
+    tier: MEDIUM
+    title: 'Odkrywca'
+    objectives: [{type: BIOME, target: ANY, goal: 5, label: 'Odwiedź różne biomy'}]
+  wheat_harvest:
+    tier: MEDIUM
+    title: 'Czas żniw'
+    objectives: [{type: HARVEST, target: WHEAT, goal: 128, label: 'Zbierz dojrzałą pszenicę'}]
+  alchemist:
+    tier: MEDIUM
+    title: 'Alchemik'
+    objectives: [{type: BREW, target: ANY, goal: 12, label: 'Uwarz butelki mikstur z efektem'}]
+  trader:
+    tier: MEDIUM
+    title: 'Handlarz'
+    objectives: [{type: TRADE, target: VILLAGER, goal: 20, label: 'Wykonaj transakcje z osadnikami'}]
+  witches:
+    tier: HARD
+    title: 'Polowanie na wiedźmy'
+    objectives: [{type: KILL, target: WITCH, goal: 12, label: 'Zabij wiedźmy'}]
+  guardians:
+    tier: HARD
+    title: 'Podwodny łowca'
+    objectives: [{type: KILL, target: GUARDIAN, goal: 30, label: 'Zabij guardiany'}]
+  wither_skeletons:
+    tier: HARD
+    title: 'Forteca pod kontrolą'
+    objectives: [{type: KILL, target: WITHER_SKELETON, goal: 25, label: 'Zabij witherowe szkielety'}]
+  ancient_debris:
+    tier: HARD
+    title: 'Starożytne szczątki'
+    objectives: [{type: MINE, target: ANCIENT_DEBRIS, goal: 6, label: 'Wykop ancient debris'}]
+  diamond_rush:
+    tier: HARD
+    title: 'Diamentowa gorączka'
+    objectives: [{type: MINE, target: 'DIAMOND_ORE,DEEPSLATE_DIAMOND_ORE', goal: 20, label: 'Wykop rudy diamentu'}]
+  distant_trail:
+    tier: HARD
+    title: 'Daleki szlak'
+    objectives: [{type: MOVE, target: ANY, goal: 15000, label: 'Przebądź bloki pieszo, łódką lub na zwierzęciu'}]
+  forge:
+    tier: HARD
+    title: 'Kuźnia'
+    objectives: [{type: CRAFT, target: ANVIL, goal: 2, label: 'Stwórz kowadła'}]
+  master_fisher:
+    tier: HARD
+    title: 'Cierpliwy rybak'
+    objectives: [{type: FISH, target: TREASURE, goal: 5, label: 'Wyłów skarby'}]
+  blacksmith:
+    tier: HARD
+    title: 'Drugie życie sprzętu'
+    objectives: [{type: ANVIL_REPAIR, target: ANY, goal: 3, label: 'Napraw zużyte przedmioty na kowadle'}]
+  explorer:
+    tier: HARD
+    title: 'Atlas podróżnika'
+    objectives: [{type: BIOME, target: ANY, goal: 10, label: 'Odwiedź różne biomy'}]
+  big_harvest:
+    tier: HARD
+    title: 'Pełne spichlerze'
+    objectives: [{type: HARVEST, target: ANY, goal: 384, label: 'Zbierz dojrzałe uprawy'}]
+  week_nether:
+    tier: WEEKLY
+    title: 'Netherowa ekspedycja'
+    objectives:
+      - {type: KILL, target: BLAZE, goal: 60, label: 'Zabij blaze'}
+      - {type: KILL, target: WITHER_SKELETON, goal: 40, label: 'Zabij witherowe szkielety'}
+      - {type: MINE, target: ANCIENT_DEBRIS, goal: 8, label: 'Wykop ancient debris'}
+  week_traveler:
+    tier: WEEKLY
+    title: 'Podróżnik i rybak'
+    objectives:
+      - {type: MOVE, target: ANY, goal: 30000, label: 'Przebądź bloki'}
+      - {type: FISH, target: FISH, goal: 60, label: 'Złów ryby'}
+      - {type: FISH, target: TREASURE, goal: 5, label: 'Wyłów skarby'}
+  week_defender:
+    tier: WEEKLY
+    title: 'Obrońca osady'
+    objectives:
+      - {type: KILL, target: ZOMBIE, goal: 100, label: 'Zabij zombie'}
+      - {type: KILL, target: SKELETON, goal: 80, label: 'Zabij szkielety'}
+      - {type: KILL, target: CREEPER, goal: 50, label: 'Zabij creepery'}
+  week_builder:
+    tier: WEEKLY
+    title: 'Rozbudowa osady'
+    objectives:
+      - {type: CRAFT, target: STONE_BRICKS, goal: 256, label: 'Stwórz kamienne cegły'}
+      - {type: CRAFT, target: LANTERN, goal: 32, label: 'Stwórz latarnie'}
+      - {type: CRAFT, target: BOOKSHELF, goal: 16, label: 'Stwórz biblioteczki'}
+  week_ocean:
+    tier: WEEKLY
+    title: 'Morska wyprawa'
+    objectives:
+      - {type: KILL, target: GUARDIAN, goal: 50, label: 'Zabij guardiany'}
+      - {type: FISH, target: FISH, goal: 50, label: 'Złów ryby'}
+      - {type: MOVE, target: ANY, goal: 20000, label: 'Przebądź bloki'}
+  week_naturalist:
+    tier: WEEKLY
+    title: 'Przyrodnik'
+    objectives:
+      - {type: BIOME, target: ANY, goal: 15, label: 'Odwiedź różne biomy'}
+      - {type: EAT_UNIQUE, target: ANY, goal: 12, label: 'Zjedz różne rodzaje jedzenia'}
+      - {type: BREED, target: ANY, goal: 40, label: 'Rozmnóż zwierzęta'}
+  week_alchemist:
+    tier: WEEKLY
+    title: 'Warsztat alchemika'
+    objectives:
+      - {type: BREW, target: ANY, goal: 48, label: 'Uwarz butelki mikstur z efektem'}
+      - {type: HARVEST, target: NETHER_WART, goal: 128, label: 'Zbierz dojrzałe nether wart'}
+      - {type: TRADE, target: VILLAGER, goal: 40, label: 'Wykonaj transakcje z osadnikami'}
+  week_workshop:
+    tier: WEEKLY
+    title: 'Rzemieślniczy tydzień'
+    objectives:
+      - {type: ANVIL_REPAIR, target: ANY, goal: 8, label: 'Napraw zużyte przedmioty na kowadle'}
+      - {type: HARVEST, target: ANY, goal: 512, label: 'Zbierz dojrzałe uprawy'}
+      - {type: TRADE, target: ANY, goal: 60, label: 'Wykonaj transakcje'}
